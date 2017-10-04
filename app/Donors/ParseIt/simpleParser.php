@@ -275,7 +275,8 @@ Class simpleParser
         $url = str_replace("&amp;", "&", $url);
         if (!substr_count($url, "http://") || !substr_count($url, "https://"))
         {
-            $url = 'http://' . $this->project . '/' . $url;
+//            $url = 'http://' . $this->project . '/' . $url;
+            $url = $this->project_link . '/' . $url;
         }
 
         return $url;

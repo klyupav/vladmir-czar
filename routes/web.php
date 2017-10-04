@@ -22,6 +22,8 @@ Route::get('/', 'ParseitController@index');
 Route::post('/parser/save-source', 'ParserController@saveSourcePost');
 Route::get('/parseit/sources', 'ParseitController@getSources');
 Route::get('/parseit/data', 'ParseitController@getData');
+Route::get('/parseit/categories', 'ParseitController@categories');
+Route::get('/parseit/products', 'ParseitController@products');
 Route::get('/parseit/clean-sources', 'ParseitController@cleanSourcesTable');
 
 Route::post('/logs/search', 'LoggerController@ajaxFilterLogs');

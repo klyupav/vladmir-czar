@@ -9,7 +9,8 @@ return [
 
     'donors' => [
         'eng' => [
-            'Template_Msk' => \App\Donors\Template_Msk::class,
+            'BartecDe_Categories_Eng' => \App\Donors\BartecDe_Categories_Eng::class,
+            'BartecDe_Products_Eng' => \App\Donors\BartecDe_Products_Eng::class,
         ]
     ],
 

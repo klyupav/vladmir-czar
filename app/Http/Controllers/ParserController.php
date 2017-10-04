@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Datum;
 use App\Models\ProxyList;
 use App\Models\Useragent;
 use App\Models\Source;
@@ -25,7 +26,7 @@ class ParserController extends Controller
         return $filename;
     }
 
-    public static function getDonorSources($donorClassName)
+    public static function getDonorSources($donorClassName, $opt = [])
     {
         if ( env("PROCESS_PARSING_LOG", false) )
         {
@@ -51,8 +52,6 @@ class ParserController extends Controller
         {
             $donor = new $class();
             $donor->proxy = ProxyList::getNextProxy();
-
-            $opt = [];
             if ( config('parser.use_proxy_list') )
             {
                 $proxy = ProxyList::getNextProxy();
@@ -79,7 +78,7 @@ class ParserController extends Controller
 
             if ( count($sources) )
             {
-                Source::where(['available' => 1, 'donor_class_name' => $donorClassName])->update(['available' => 0]);
+//                Source::where(['available' => 1, 'donor_class_name' => $donorClassName])->update(['available' => 0]);
             }
 
             if ( is_array($sources))
@@ -171,7 +170,7 @@ class ParserController extends Controller
         set_time_limit(0);
         $results = [
             'result' => [
-                'tickets' => [
+                'data' => [
                     'count' => 0,
                     'new' => 0,
                     'update' => 0
@@ -201,83 +200,32 @@ class ParserController extends Controller
             $opt['cookieFile'] = $donor->cookieFile;
             $data = $donor->getData($url, $opt);
 
-//            return $events;
-            if ( $data != false )
+            if ( is_array($data) )
             {
-                // Ставим статус "нет в наличии" у всех билетов, далее статус обновиться только у найденных
-                $multi_curl = new MultiCurl();
-                $multi_curl->setPort(80);
-                $multi_curl->setTimeout(0);
-                $multi_curl->setConcurrency(env('SAVE_THREADS', 20));    //  потоки
-
-                $multi_curl->success(function($instance) {
-//                echo 'call to "' . $instance->url . '" was successful.' . "\n";
-//                echo 'response:' . "\n";
-//                var_dump($instance->response);
-                });
-                $multi_curl->error(function($instance) {
-//                echo 'call to "' . $instance->url . '" was unsuccessful.' . "\n";
-//                echo 'error code: ' . $instance->errorCode . "\n";
-//                echo 'error message: ' . $instance->errorMessage . "\n";
-//                echo 'response:' . "\n";
-//                var_dump($instance->response);
-                });
-                $multi_curl->complete(function($instance) {
-//                echo 'call completed' . "\n";
-                });
-
                 if ( env("PROCESS_PARSING_LOG", false) ) {
                     ProcessParsingLog::find($log_id)->update([
                         'write_begin' => date('Y-m-d H:i:s'),
                     ]);
                 }
-                $results['tickets_found'] = [];
-//                foreach ( @$events as $event )
-//                {
-//                    $validator = Validator::make($event, TicketsSource::rules());
-//                    if ($validator->fails())
-//                    {
-//                        $message = $validator->errors()->first();
-//                        LoggerController::logToFile($message, 'error', $event);
-//                        continue;
-//                    }
-//                    if ( TicketsSource::saveOrUpdate($event) === 'insert')
-//                    {
-//                        continue;
-//                    }
-//                    $kassirclub_event_id = null;
-//                    $kassirclub_location_id = null;
-//                    if ( $tickets_source = TicketsSource::where(['event_hash' => $event['event_hash']])->get()->first() )
-//                    {
-//                        $kassirclub_event_id = $tickets_source->kassirclub_event_id;
-//                        $kassirclub_location_id = $tickets_source->kassirclub_location_id;
-//                        if ( empty($kassirclub_location_id) )
-//                        {
-//                            $kassirclub_location_id = KassirclubLocation::findLocationIdFromSynonyms($tickets_source->location);
-//                        }
-//                    }
-//
-//                    $results['result']['events'][] = $event;
-//                    $count_tickets += count($event['tickets']);
-////                $tickets_result = static::saveEvent($kassirclub_event_id, $kassirclub_location_id, $url, $event, $donorClassName);
-//                    $multi_curl->addPost(env('APP_URL')."/parser/save-event", array(
-//                        'donor_class_name' => $donorClassName,
-//                        'kassirclub_event_id' => $kassirclub_event_id,
-//                        'kassirclub_location_id' => $kassirclub_location_id,
-//                        'url' => $url,
-//                        'event' => serialize($event),
-//                    ));
-//                    if ( isset($results['tickets_found'][$event['event_hash']]) )
-//                    {
-//                        $results['tickets_found'][$event['event_hash']] += count($event['tickets']);
-//                    }
-//                    else
-//                    {
-//                        $results['tickets_found'][$event['event_hash']] = count($event['tickets']);
-//                    }
-//                }
-                $multi_curl->start(); // Blocks until all items in the queue have been processed.
-
+                $results['result']['data'] = $data;
+                // Сохраняем мероприятия
+                $validator = Validator::make($data, Datum::rules());
+                if ($validator->fails())
+                {
+                    $message = $validator->errors()->first();
+                    LoggerController::logToFile($message, 'info', $data, true);
+                    $link = urlencode($url);
+                    $server_url = env('SERVER_URL');
+                    LoggerController::logToFile("Нет данных", 'info', [
+                        "<a target='_blank' href='{$server_url}/parseit/data?d={$donorClassName}&link={$link}'>проверить</a>",
+                        'донор' => $donorClassName,
+                        'ссылка' => "<a target='_blank' href='{$url}' >{$url}</a>",
+                    ], true);
+                }
+                else
+                {
+                    Datum::saveOrUpdate($data);
+                }
                 if ( env("PROCESS_PARSING_LOG", false) ) {
                     ProcessParsingLog::find($log_id)->update([
                         'write_end' => date('Y-m-d H:i:s'),
@@ -294,26 +242,12 @@ class ParserController extends Controller
                     'донор' => $donorClassName,
                     'ссылка' => "<a target='_blank' href='{$url}' >{$url}</a>",
                 ], true);
-//                Ticket::where([
-//                    'source' => $url,
-//                ])->update(['updated_at' => date('Y-m-d H:i:s')]);
             }
         }
         else
         {
             $message = "Донор '{$class}' не найден";
             LoggerController::logToFile($message, 'error');
-        }
-
-        if ( isset($count_tickets) && $count_tickets == 0 )
-        {
-            $link = urlencode($url);
-            $server_url = env('SERVER_URL');
-            LoggerController::logToFile("Нет данных", 'info', [
-                "<a target='_blank' href='{$server_url}/parseit/data?d={$donorClassName}&link={$link}'>проверить</a>",
-                'донор' => $donorClassName,
-                'ссылка' => "<a target='_blank' href='{$url}' >{$url}</a>",
-            ], true);
         }
 
         if ( env("PROCESS_PARSING_LOG", false) ) {

@@ -65,10 +65,6 @@
                         <th></th>
                     </tr>
                     @foreach($sources as $source)
-                        <?php
-//                            $source->needModeration();
-                            $source->update(['moderation' => $source->needModeration()]);
-                        ?>
                         <tr id="{{$source->hash}}">
                             <td>{{$source->donor_class_name}}</td>
                             <td>
@@ -102,7 +98,7 @@
         {
             var td = $(elem).parent();
             var tr = td.parent();
-            var hash = tr.find('input[name=hash]').val();
+            var hash = tr.prop('id');
 
             var data = {
                 '_token': $('meta[name="csrf-token"]').attr('content'),

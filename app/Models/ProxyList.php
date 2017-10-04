@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Model;
  * @mixin \Eloquent
  * @property int $useragent_id
  * @method static \Illuminate\Database\Query\Builder|\App\Models\ProxyList whereUseragentId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\ProxyList whereId($value)
  */
 class ProxyList extends Model
 {

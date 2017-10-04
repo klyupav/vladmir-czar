@@ -3,39 +3,42 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
+
 /**
- * Class Source
+ * Class Datum
  *
- * @property string $hash
- * @property string $source
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Source whereHash($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Source whereSource($value)
- * @mixin \Eloquent
  * @property int $id
  * @property string $donor_class_name
  * @property string $name
  * @property string $image
  * @property string $desc
+ * @property string $hash
+ * @property string $source
+ * @property string $category
  * @property bool $parseit
  * @property bool $available
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Source whereAvailable($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Source whereDesc($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Source whereDonorClassName($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Source whereName($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Source whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Source whereImage($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Source whereParseit($value)
  * @property int $version
+ * @property string $serialize
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Source whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Source whereUpdatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Source whereVersion($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Datum whereAvailable($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Datum whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Datum whereDesc($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Datum whereDonorClassName($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Datum whereHash($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Datum whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Datum whereImage($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Datum whereName($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Datum whereParseit($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Datum whereSerialize($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Datum whereSource($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Datum whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Datum whereVersion($value)
+ * @mixin \Eloquent
  */
-class Source extends Model
+class Datum extends Model
 {
-    protected $table = 'sources';
+    protected $table = 'data';
 
     public $timestamps = true;
 
@@ -46,6 +49,7 @@ class Source extends Model
         'desc',
         'hash',
         'source',
+        'category',
         'parseit',
         'version',
         'available'
@@ -58,20 +62,21 @@ class Source extends Model
             'name' => 'required',
             'hash' => 'required',
             'source' => 'required',
+            'serialize' => 'required',
         ];
     }
 
     protected $guarded = [];
 
-    public function countSourcesByDonor()
+    public function countDatumByDonor()
     {
-        return Source::where(['donor_class_name' => $this->donor_class_name])
+        return static::where(['donor_class_name' => $this->donor_class_name])
             ->where(['available' => 1])->get(['id'])->count();
     }
 
-    public function countSourcesParsingByDonor()
+    public function countDatumParsingByDonor()
     {
-        return Source::where(['donor_class_name' => $this->donor_class_name])
+        return static::where(['donor_class_name' => $this->donor_class_name])
             ->where(['available' => 1])
             ->where(['parseit' => 1])
             ->get(['id'])->count();
@@ -86,6 +91,8 @@ class Source extends Model
                 $model->update([
                     'name' => $attr['name'],
                     'hash' => $attr['hash'],
+                    'category' => @$attr['category'],
+                    'serialize' => serialize($attr['serialize']),
                     'image' => empty(@$attr['image']) ? $model->image : $attr['image'],
                     'desc' => empty(@$attr['desc']) ? $model->desc : $attr['desc'],
                     'available' => 1,
@@ -98,6 +105,8 @@ class Source extends Model
             $model->update([
                 'name' => $attr['name'],
                 'hash' => $attr['hash'],
+                'category' => @$attr['category'],
+                'serialize' => serialize($attr['serialize']),
                 'image' => empty(@$attr['image']) ? $model->image : $attr['image'],
                 'desc' => empty(@$attr['desc']) ? $model->desc : $attr['desc'],
                 'available' => 1,
@@ -114,6 +123,8 @@ class Source extends Model
                 'desc' => empty(@$attr['desc']) ? null : $attr['desc'],
                 'hash' => $attr['hash'],
                 'source' => $attr['source'],
+                'category' => @$attr['category'],
+                'serialize' => serialize($attr['serialize']),
                 'created_at' => date('Y-m-d H:i:s'),
                 'version' => $attr['version']
             ]);

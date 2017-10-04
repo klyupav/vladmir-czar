@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSourcesTable extends Migration
+class CreateDataTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,29 +13,23 @@ class CreateSourcesTable extends Migration
      */
     public function up()
     {
-        Schema::create('sources', function(Blueprint $table){
+        Schema::create('data', function(Blueprint $table){
             $table->increments('id');
             $table->index(['donor_class_name','parseit'],'filtor');
             $table->index(['source'],'source');
             $table->string('donor_class_name');
             $table->string('name');
             $table->string('image')->nullable();
+            $table->string('category')->nullable();
             $table->text('desc')->nullable();
             $table->string('hash', 32);
             $table->string('source');
             $table->boolean('parseit')->default(1);
             $table->boolean('available')->default(true);
             $table->integer('version')->default(0);
+            $table->text('serialize');
             $table->timestamps();
         });
-        $url = 'https://www.bartec.de/en/products/';
-        \App\Models\Source::create([
-            'name' => 'Overview',
-            'source' => $url,
-            'hash' => md5($url),
-            'donor_class_name' => 'BartecDe_Categories_Eng',
-            'version' => 1,
-        ]);
     }
 
     /**
@@ -45,6 +39,6 @@ class CreateSourcesTable extends Migration
      */
     public function down()
     {
-        Schema::drop('sources');
+        //
     }
 }
