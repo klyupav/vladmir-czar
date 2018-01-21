@@ -28,14 +28,6 @@ class CreateSourcesTable extends Migration
             $table->integer('version')->default(0);
             $table->timestamps();
         });
-        $url = 'https://www.bartec.de/en/products/';
-        \App\Models\Source::create([
-            'name' => 'Overview',
-            'source' => $url,
-            'hash' => md5($url),
-            'donor_class_name' => 'BartecDe_Categories_Eng',
-            'version' => 1,
-        ]);
     }
 
     /**

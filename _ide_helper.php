@@ -1,7 +1,7 @@
 <?php
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 5.3.30 on 2017-03-05.
+ * Generated for Laravel 5.3.31 on 2018-01-21.
  *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>
  * @see https://github.com/barryvdh/laravel-ide-helper
@@ -10,6 +10,49 @@ namespace  {
     exit("This file should not be included, only analyzed by your IDE");
 }
 
+namespace Spatie\Activitylog {
+
+    class ActivitylogFacade {
+        
+        /**
+         * Log some activity to all registered log handlers.
+         *
+         * @param $text
+         * @param string $userId
+         * @return bool 
+         * @static 
+         */
+        public static function log($text, $userId = '')
+        {
+            return \Spatie\Activitylog\ActivitylogSupervisor::log($text, $userId);
+        }
+        
+        /**
+         * Clean out old entries in the log.
+         *
+         * @return bool 
+         * @static 
+         */
+        public static function cleanLog()
+        {
+            return \Spatie\Activitylog\ActivitylogSupervisor::cleanLog();
+        }
+        
+        /**
+         * Normalize the user id.
+         *
+         * @param object|int $userId
+         * @return int 
+         * @static 
+         */
+        public static function normalizeUserId($userId)
+        {
+            return \Spatie\Activitylog\ActivitylogSupervisor::normalizeUserId($userId);
+        }
+        
+    }         
+}
+    
 namespace Illuminate\Support\Facades {
 
     class App {
@@ -11042,9 +11085,88 @@ namespace Illuminate\Support\Facades {
     }         
 }
     
+namespace Yajra\Datatables\Facades {
+
+    class Datatables {
+        
+        /**
+         * Gets query and returns instance of class.
+         *
+         * @param mixed $builder
+         * @return mixed 
+         * @static 
+         */
+        public static function of($builder)
+        {
+            return \Yajra\Datatables\Datatables::of($builder);
+        }
+        
+        /**
+         * Datatables using Query Builder.
+         *
+         * @param \Illuminate\Database\Query\Builder $builder
+         * @return \Yajra\Datatables\Engines\QueryBuilderEngine 
+         * @static 
+         */
+        public static function usingQueryBuilder($builder)
+        {
+            return \Yajra\Datatables\Datatables::usingQueryBuilder($builder);
+        }
+        
+        /**
+         * Datatables using Collection.
+         *
+         * @param \Illuminate\Support\Collection $builder
+         * @return \Yajra\Datatables\Engines\CollectionEngine 
+         * @static 
+         */
+        public static function usingCollection($builder)
+        {
+            return \Yajra\Datatables\Datatables::usingCollection($builder);
+        }
+        
+        /**
+         * Datatables using Eloquent.
+         *
+         * @param mixed $builder
+         * @return \Yajra\Datatables\Engines\EloquentEngine 
+         * @static 
+         */
+        public static function usingEloquent($builder)
+        {
+            return \Yajra\Datatables\Datatables::usingEloquent($builder);
+        }
+        
+        /**
+         * Get html builder class.
+         *
+         * @return \Yajra\Datatables\Html\Builder 
+         * @static 
+         */
+        public static function getHtmlBuilder()
+        {
+            return \Yajra\Datatables\Datatables::getHtmlBuilder();
+        }
+        
+        /**
+         * Get request object.
+         *
+         * @return \Yajra\Datatables\Request 
+         * @static 
+         */
+        public static function getRequest()
+        {
+            return \Yajra\Datatables\Datatables::getRequest();
+        }
+        
+    }         
+}
+    
     
 namespace {
 
+    class Activity extends \Spatie\Activitylog\ActivitylogFacade {}
+    
     class App extends \Illuminate\Support\Facades\App {}
     
     class Artisan extends \Illuminate\Support\Facades\Artisan {}
@@ -12941,6 +13063,8 @@ namespace {
             return \Illuminate\Database\Query\Builder::macroCall($method, $parameters);
         }
         }
+    
+    class Datatables extends \Yajra\Datatables\Facades\Datatables {}
     
 }
 

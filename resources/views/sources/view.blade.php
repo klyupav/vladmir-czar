@@ -17,65 +17,66 @@
 
             <div class="row">
                 {{--ФИЛЬТР--}}
-                <div class="row">
-                    <form class="" role="search">
-                        <table class="table table-striped">
-                            <tr>
-                                <td>
-                                    <select name="donor_class_name" class="form-control" >
-                                        <option value="">Все доноры</option>
+                {{--<div class="row">--}}
+                    {{--<form class="" role="search">--}}
+                        {{--<table class="table table-striped">--}}
+                            {{--<tr>--}}
+                                {{--<td>--}}
+                                    {{--<select name="donor_class_name" class="form-control" >--}}
+                                        {{--<option value="">Все доноры</option>--}}
 
-                                        @foreach( $donor_list as $donor )
-                                            @if( isset($_GET['donor_class_name']) && $_GET['donor_class_name'] == $donor )
-                                                <option value="{{ $donor }}" selected>{{ $donor }}</option>
-                                            @else
-                                                <option value="{{ $donor }}">{{ $donor }}</option>
-                                            @endif
-                                        @endforeach
+                                        {{--@foreach( $donor_list as $donor )--}}
+                                            {{--@if( isset($_GET['donor_class_name']) && $_GET['donor_class_name'] == $donor )--}}
+                                                {{--<option value="{{ $donor }}" selected>{{ $donor }}</option>--}}
+                                            {{--@else--}}
+                                                {{--<option value="{{ $donor }}">{{ $donor }}</option>--}}
+                                            {{--@endif--}}
+                                        {{--@endforeach--}}
 
-                                    </select>
-                                </td>
-                                <td>
-                                    <input value="@if(isset($_GET['source'])){{ $_GET['source'] }}@endif" type="text" name="source" class="form-control" placeholder="Ссылка на источник">
-                                </td>
-                                <td>
-                                    <input value="@if(isset($_GET['name'])){{ $_GET['name'] }}@endif" type="text" name="name" class="form-control" placeholder="Источник">
-                                </td>
-                                <td>
-                                    <select name="parseit" class="form-control" >
-                                        <option value="both">Парсинг</option>
-                                        <option value="true"@if( isset( $_GET['parseit'] ) && $_GET['parseit'] === 'true' ){{ 'selected' }}@endif>Галка стоит</option>
-                                        <option value="false"@if( isset( $_GET['parseit'] ) && $_GET['parseit'] === 'false' ){{ 'selected' }}@endif>Галки нет</option>
-                                    </select>
-                                </td>
-                            </tr>
-                        </table>
-                        <button type="submit" class="btn btn-default">Поиск</button>
-                    </form>
-                </div>
+                                    {{--</select>--}}
+                                {{--</td>--}}
+                                {{--<td>--}}
+                                    {{--<input value="@if(isset($_GET['source'])){{ $_GET['source'] }}@endif" type="text" name="source" class="form-control" placeholder="Ссылка на источник">--}}
+                                {{--</td>--}}
+                                {{--<td>--}}
+                                    {{--<input value="@if(isset($_GET['name'])){{ $_GET['name'] }}@endif" type="text" name="name" class="form-control" placeholder="Источник">--}}
+                                {{--</td>--}}
+                                {{--<td>--}}
+                                    {{--<select name="parseit" class="form-control" >--}}
+                                        {{--<option value="both">Парсинг</option>--}}
+                                        {{--<option value="true"@if( isset( $_GET['parseit'] ) && $_GET['parseit'] === 'true' ){{ 'selected' }}@endif>Галка стоит</option>--}}
+                                        {{--<option value="false"@if( isset( $_GET['parseit'] ) && $_GET['parseit'] === 'false' ){{ 'selected' }}@endif>Галки нет</option>--}}
+                                    {{--</select>--}}
+                                {{--</td>--}}
+                            {{--</tr>--}}
+                        {{--</table>--}}
+                        {{--<button type="submit" class="btn btn-default">Поиск</button>--}}
+                    {{--</form>--}}
+                {{--</div>--}}
                 {{--ФИЛЬТР--}}
             </div>
-            <hr>
+            {{--<hr>--}}
             <div class="row">
                 <table class="table">
                     <tr>
-                        <th>Донор</th>
-                        <th>Источник</th>
-                        <th>парсинг</th>
-                        <th></th>
+                        {{--<th>Донор</th>--}}
+                        {{--<th>Источник</th>--}}
+                        {{--<th>парсинг</th>--}}
                     </tr>
                     @foreach($sources as $source)
                         <tr id="{{$source->hash}}">
-                            <td>{{$source->donor_class_name}}</td>
+                            <td><a class="btn btn-default" target="_blank" href="{{ url('/parseit/'.strtolower($source->donor_class_name)) }}">Парсить</a></td>
                             <td>
-                                <a href="{{urldecode($source->source)}}" target="_blank">
-                                    <img width="150px" src="{{ $source->image }}"><br>
-                                    {{$source->name}}<br>
-                                </a>
+                                <div class="row">
+                                    <a href="{{urldecode($source->source)}}" target="_blank">
+                                        {{--<img width="150px" src="{{ $source->image }}"><br>--}}
+                                        {{$source->name}}<br>
+                                    </a>
+                                </div>
                             </td>
-                            <td>
-                                <input onclick="eventParseitChecked(this)" type="checkbox" name="parseit" @if( $source->parseit ){{ 'checked' }}@endif>
-                            </td>
+                            {{--<td>--}}
+                                {{--<input onclick="eventParseitChecked(this)" type="checkbox" name="parseit" @if( $source->parseit ){{ 'checked' }}@endif>--}}
+                            {{--</td>--}}
                         </tr>
                     @endforeach
                 </table>

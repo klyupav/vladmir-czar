@@ -225,11 +225,12 @@ Class simpleParser
         }
 
         $response = [ 'data' => $data, 'status' => $status ];
-
-        //print_r($status);
-        if(@$status['http_code']!=200){
+//        print_r($url);
+//        print_r($opt);
+//        print_r($status);
+        if(@$status['http_code'] != 200)
+        {
             if($status['http_code'] == 301 || $status['http_code'] == 302) {
-                //print_r($status);die();
                 if (isset($status['redirect_url'])) {
                     $response = static::load($status['redirect_url'], $opt);
                 }
