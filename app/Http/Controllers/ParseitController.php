@@ -84,7 +84,8 @@ class ParseitController extends Controller
             }
         }
         $uri = preg_replace("%\?.*?$%uis", '', $request->getRequestUri());
-        $version_name = explode('/', $uri)[2];
+        $version_name = explode('/', $uri);
+        $version_name = $version_name[count($version_name)-1];
         $query = $query->where(['version' => @$version_id[$version_name]]);
         $donor_list = [];
         $donors = @config('parser.donors')[$version_name];
