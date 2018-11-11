@@ -36,23 +36,6 @@ class Handler extends ExceptionHandler
         $e = $exception;
         $message = '['.$e->getCode().'] "'.$e->getMessage().'" on line '.$e->getLine().' of file '.$e->getFile();
         Log::error($message);
-
-        if ( @config('parser.log_to_mail') )
-        {
-            try
-            {
-                \Mail::send('emails.alert', array('text' => $message, 'context' => ''), function($message)
-                {
-                    $to = explode(',', config('parser.admin_emails'));
-                    $message->to($to);
-                    $message->subject('Системные ошибки');
-                });
-            }
-            catch (\Exception $e)
-            {
-
-            }
-        }
     }
 
     /**

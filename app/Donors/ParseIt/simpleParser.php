@@ -67,6 +67,10 @@ Class simpleParser
     public function loadUrl($url, $opts = [])
     {
         $response = static::load($url, $opts);
+        if ( isset($opts['returnHeader']) )
+        {
+            return $response;
+        }
         $content = $response['data'];
         if ( !$content )
         {

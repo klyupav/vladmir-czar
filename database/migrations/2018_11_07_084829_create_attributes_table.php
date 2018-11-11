@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSourcesTable extends Migration
+class CreateAttributesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,14 @@ class CreateSourcesTable extends Migration
      */
     public function up()
     {
-        Schema::create('sources', function(Blueprint $table){
+        Schema::create('attributes', function(Blueprint $table){
             $table->increments('id');
-            $table->integer('product_id')->nullable();
-            $table->string('source')->unique();
-            $table->string('hash', 32)->unique();
-            $table->boolean('parseit')->default(0);
-            $table->boolean('available')->default(1);
-            $table->text('param')->nullable();
+            $table->integer('product_id')->unabled();
+            $table->string('title')->unabled();
+            $table->integer('price')->nullable();
+            $table->string('instock')->default(0);
             $table->timestamps();
+            $table->unique(['product_id', 'title']);
         });
     }
 
@@ -32,6 +31,6 @@ class CreateSourcesTable extends Migration
      */
     public function down()
     {
-        Schema::drop('sources');
+        Schema::drop('attributes');
     }
 }

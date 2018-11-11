@@ -9,7 +9,7 @@ return [
 
     'donors' => [
         'main' => [
-            'Rao_rf_pub' => \App\Donors\Rao_rf_pub::class,
+            'Rao_rf_pub' => \App\Donors\B2BDivehouseRuCategory::class,
             'Rss_rf_pub' => \App\Donors\Rss_rf_pub::class,
             'Rss_ts_pub' => \App\Donors\Rss_ts_pub::class,
             'Rss_pub_gost_r' => \App\Donors\Rss_pub_gost_r::class,
