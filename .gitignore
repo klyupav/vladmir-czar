@@ -8,3 +8,4 @@ Homestead.yaml
 .env
 dostupi
 TZ
+composer.lock
