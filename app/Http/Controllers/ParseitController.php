@@ -72,7 +72,7 @@ class ParseitController extends Controller
     {
         $donor_product = new B2BDivehouseRuProduct();
         $opt['cookieFile'] = $donor_product->cookieFile;
-        $opt['url'] = 'http://b2b.divehouse.ru/catalog/dopolnitelnoe_oborudovanie_coltri/vozdushnyy_resiver_2ballona_50l_350bar_na_rame_s_ventilyami_i_soedineniem_coltri/';
+        $opt['url'] = 'http://b2b.divehouse.ru/catalog/odezhda_obuv_1/bryuki_sportivnye_head_team_jr_detskie/';
         $product = $donor_product->getData($opt['url'], $opt);
         $validator = Validator::make($product, Product::rules());
         if ($validator->fails())
@@ -204,6 +204,7 @@ class ParseitController extends Controller
                     {
                         $next_source->update(['available' => 0]);
                         Product::whereId($next_source->product_id)->update(['instock' => 0]);
+                        Attribute::whereProductId($next_source->product_id)->update(['instock' => 0]);
                         $message = $validator->errors()->first();
                         LoggerController::logToFile($message, 'info', $product, true);
                     }
