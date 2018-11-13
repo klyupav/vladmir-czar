@@ -85,14 +85,16 @@ class ParseitController extends Controller
             $pid = Product::saveOrUpdate($product);
             if ( isset($product['specific']) && is_array($product['specific']) )
             {
+                SpecificationToProduct::whereProductId($pid)->update(['isset' => 0]);
                 foreach ( $product['specific'] as $title => $value )
                 {
                     $specific = Specification::firstOrCreate(['title' => $title]);
-                    SpecificationToProduct::firstOrCreate(['product_id' => $pid, 'specific_id' => $specific->id])->update(['value' => $value]);
+                    SpecificationToProduct::firstOrCreate(['product_id' => $pid, 'specific_id' => $specific->id])->update(['value' => $value, 'isset' => 1]);
                 }
             }
             if ( isset($product['attr']) && is_array($product['attr']) )
             {
+                Attribute::whereProductId($pid)->update(['instock' => 0]);
                 foreach ( $product['attr'] as $attr )
                 {
                     $validator = Validator::make($attr, Attribute::rules());
@@ -214,14 +216,16 @@ class ParseitController extends Controller
                         Source::whereId($next_source->id)->update(['product_id' => $pid]);
                         if ( isset($product['specific']) && is_array($product['specific']) )
                         {
+                            SpecificationToProduct::whereProductId($pid)->update(['isset' => 0]);
                             foreach ( $product['specific'] as $title => $value )
                             {
                                 $specific = Specification::firstOrCreate(['title' => $title]);
-                                SpecificationToProduct::firstOrCreate(['product_id' => $pid, 'specific_id' => $specific->id])->update(['value' => $value]);
+                                SpecificationToProduct::firstOrCreate(['product_id' => $pid, 'specific_id' => $specific->id])->update(['value' => $value, 'isset' => 1]);
                             }
                         }
                         if ( isset($product['attr']) && is_array($product['attr']) )
                         {
+                            Attribute::whereProductId($pid)->update(['instock' => 0]);
                             foreach ( $product['attr'] as $attr )
                             {
                                 $validator = Validator::make($attr, Attribute::rules());

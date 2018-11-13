@@ -20,6 +20,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\SpecificationToProduct whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\SpecificationToProduct whereValue($value)
  * @mixin \Eloquent
+ * @property int $isset
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\SpecificationToProduct whereIsset($value)
  */
 class SpecificationToProduct extends Model
 {
@@ -30,6 +32,7 @@ class SpecificationToProduct extends Model
     protected $fillable = [
         'product_id',
         'specific_id',
+        'isset',
         'value'
     ];
 
