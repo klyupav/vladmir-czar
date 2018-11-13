@@ -94,9 +94,11 @@ Class B2BDivehouseRuProduct extends B2BDivehouseRu {
             {
                 foreach ($arSKU as $item)
                 {
+                    $p = trim(_String::parseNumber(str_replace(' ', '', $item->PRICE)));
+                    $DISCOUNT_PRICE = trim(_String::parseNumber(str_replace(' ', '', $item->DISCOUNT_PRICE)));
                     $attr[] = [
                         'title' => $item->{0},
-                        'price' => trim(_String::parseNumber(str_replace(' ', '', $item->PRICE))),
+                        'price' => !empty($DISCOUNT_PRICE) ? $DISCOUNT_PRICE : $p,
                         'instock' => $item->CATALOG_QUANTITY,
                     ];
                 }
